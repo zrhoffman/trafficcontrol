@@ -66,4 +66,4 @@ sed -i "s|traffic_monitor\\.bootstrap\\.hosts|${TM_FQDN}:${TM_PORT}|g" core/src/
 mvn verify \
 	-DforkCount=1 -DreuseForks=true \
 	-Djava.library.path=/usr/share/java:/usr/lib64 -DfailIfNoTests=false -DoutputDirectory=/junit 2>&1
-mv core/target/surefire-reports/* /junit
+mv core/target/surefire-reports/* core/target/failsafe-reports/* /junit
