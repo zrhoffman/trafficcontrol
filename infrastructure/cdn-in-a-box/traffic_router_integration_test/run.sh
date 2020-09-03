@@ -38,8 +38,12 @@ do
   source "$X509_CA_ENV_FILE"
 done
 
+debug_properties=();
 if [[ "$TR_TEST_DEBUG_ENABLE" == true ]]; then
-		export MAVEN_OPTS='-agentlib:jdwp=transport=dt_socket,server=n,address=host.docker.internal:8000,suspend=n'
+		debug_properties+=(
+		'-Dmaven.surefire.debug=-agentlib:jdwp=transport=dt_socket,server=n,suspend=n,address=host.docker.internal:8000 -DforkCount=0 -DreuseForks=false' # debug properties for surefire (unit) tests
+		'-Dmaven.failsafe.debug=-agentlib:jdwp=transport=dt_socket,server=n,suspend=n,address=host.docker.internal:8000' # debug properties for failsafe (integration and external) tests
+	)
 fi;
 
 # Trust the CIAB-CA at the System level
@@ -63,7 +67,6 @@ traffic_ops.password=${TO_ADMIN_PASSWORD}
 TO_PROPERTIES
 )
 sed -i "s|traffic_monitor\\.bootstrap\\.hosts|${TM_FQDN}:${TM_PORT}|g" core/src/main/webapp/WEB-INF/applicationContext.xml
-mvn verify \
-	-DforkCount=1 -DreuseForks=true \
+mvn "${debug_properties[@]}" verify \
 	-Djava.library.path=/usr/share/java:/usr/lib64 -DfailIfNoTests=false -DoutputDirectory=/junit 2>&1
 mv core/target/surefire-reports/* core/target/failsafe-reports/* /junit
