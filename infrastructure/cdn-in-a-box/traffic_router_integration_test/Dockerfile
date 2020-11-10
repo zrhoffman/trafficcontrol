@@ -34,6 +34,7 @@ RUN set -o errexit;\
         java-1.8.0-openjdk-devel \
         java-1.8.0-openjdk-headless \
         maven \
+        nc \
         net-tools \
         rpm-build;\
     dnf -y install tomcat-native

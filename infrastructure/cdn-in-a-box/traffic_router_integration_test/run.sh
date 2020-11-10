@@ -17,7 +17,7 @@
 # under the License.
 
 trap 'echo "Error on line ${LINENO} of ${0}"; exit 1' ERR
-set -o xtrace -o errexit -o nounset
+set -o errexit -o nounset
 
 set-dns.sh
 insert-self-into-dns.sh
@@ -36,6 +36,19 @@ do
   echo "Waiting on X509 vars to be defined"
   sleep 1
   source "$X509_CA_ENV_FILE"
+done
+
+# Wait for the initial data load to be copied
+until [[ -f "$ENROLLER_DIR/initial-load-done" ]] ; do
+	echo "Waiting for enroller initial data load to complete...."
+	sleep 2
+	sync
+done
+
+# Wait for traffic monitor
+until nc $TM_FQDN $TM_PORT </dev/null >/dev/null 2>&1; do
+  echo "Waiting for Traffic Monitor to start..."
+  sleep 3
 done
 
 mvn_command=(mvn);
