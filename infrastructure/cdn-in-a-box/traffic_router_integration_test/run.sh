@@ -67,6 +67,8 @@ traffic_ops.password=${TO_ADMIN_PASSWORD}
 TO_PROPERTIES
 )
 sed -i "s|traffic_monitor\\.bootstrap\\.hosts|${TM_FQDN}:${TM_PORT}|g" core/src/main/webapp/WEB-INF/applicationContext.xml
+
+trap 'mv core/target/surefire-reports/* core/target/failsafe-reports/* /junit' EXIT
+trap - ERR
 "${mvn_command[@]}" verify \
 	-Djava.library.path=/usr/share/java:/usr/lib64 -DfailIfNoTests=false -DoutputDirectory=/junit 2>&1
-mv core/target/surefire-reports/* core/target/failsafe-reports/* /junit
