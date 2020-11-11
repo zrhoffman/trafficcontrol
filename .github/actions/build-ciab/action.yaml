@@ -20,3 +20,7 @@ description: Builds CDN-in-a-Box images for the standard CiaB services and the r
 runs:
   using: node12
   main: build-ciab.js
+inputs:
+  additional-composes:
+    description: 'Additional compose files to include, in addition to docker-compose.yml'
+    required: no

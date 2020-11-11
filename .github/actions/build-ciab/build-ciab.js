@@ -20,7 +20,11 @@ const spawnOptions = {
 	stdio: "inherit",
 	stderr: "inherit"
 };
-const dockerCompose = ["docker-compose", "-f", "docker-compose.yml", "-f", "docker-compose.readiness.yml"];
+let composes = ["docker-compose.yml"];
+if (typeof process.env.INPUT_ADDITIONAL_COMPOSES !== "undefined" && process.env.INPUT_ADDITIONAL_COMPOSES.length !== 0) {
+	composes = composes.concat(process.env.INPUT_ADDITIONAL_COMPOSES.split(/\s+/));
+}
+const dockerCompose = ["docker-compose", "-f"].concat(composes.reduce((aggregate, element) => aggregate.concat("-f", element)));
 process.env.DOCKER_BUILDKIT = 1;
 process.env.COMPOSE_DOCKER_CLI_BUILD = 1;
 
