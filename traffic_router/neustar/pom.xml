@@ -85,7 +85,7 @@ under the License.
 	<build>
 		<plugins>
 			<plugin>
-				<!-- This is only needed because of java version that jenkins is using, it only applies to test code -->
+				<!-- This is only needed because of the java version that jenkins is using, it only applies to test code -->
 				<!-- https://github.com/jayway/powermock/issues/525 -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
