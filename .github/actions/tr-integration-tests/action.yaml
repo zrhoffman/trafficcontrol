@@ -15,15 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: build-ciab
-description: Builds CDN-in-a-Box images for the standard CiaB services and the readiness service
+name: tr-integration-tests
+description: Runs Traffic Router integration tests and external tests
 runs:
   using: node12
-  main: build-ciab.js
-inputs:
-  additional_composes:
-    description: 'Additional compose files to include, in addition to docker-compose.yml, separated by spaces'
-    required: no
-  services:
-    description: 'A list of docker-compose services to build, separated by spaces'
-    required: no
+  main: tr-integration-tests.js

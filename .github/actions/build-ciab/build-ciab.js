@@ -20,13 +20,19 @@ const spawnOptions = {
 	stdio: "inherit",
 	stderr: "inherit"
 };
-let composes = ["docker-compose.yml"];
-if (typeof process.env.INPUT_ADDITIONAL_COMPOSES !== "undefined" && process.env.INPUT_ADDITIONAL_COMPOSES.length !== 0) {
-	composes = composes.concat(process.env.INPUT_ADDITIONAL_COMPOSES.split(/\s+/));
-}
-const dockerCompose = ["docker-compose", "-f"].concat(composes.reduce((aggregate, element) => aggregate.concat("-f", element)));
 process.env.DOCKER_BUILDKIT = 1;
 process.env.COMPOSE_DOCKER_CLI_BUILD = 1;
+
+function splitEnvironmentVariable(name, allowEmpty = false) {
+	const value = process.env[name];
+	if (typeof value !== "undefined" && value.length > 0) {
+		return value.split(/\s+/);
+	}
+	if (allowEmpty) {
+		return [];
+	}
+	throw new Error(`Missing environment variable ${name}`);
+}
 
 function moveRPMs() {
 	process.chdir(`${process.env.GITHUB_WORKSPACE}/dist`);
@@ -51,7 +57,14 @@ function runProcess(...commandArguments) {
 	process.exit(proc.status);
 }
 
+const composes = ["docker-compose.yml"];
+const additionalComposes = splitEnvironmentVariable("INPUT_ADDITIONAL_COMPOSES", true);
+if (additionalComposes.length > 0) {
+	composes.push(...additionalComposes);
+}
+const dockerCompose = ["docker-compose"].concat(composes.reduce((aggregate, element) => aggregate.concat("-f", element), []));
+
 moveRPMs();
 process.chdir(`${process.env.GITHUB_WORKSPACE}/infrastructure/cdn-in-a-box`);
 runProcess("make"); // Place the RPMs for docker-compose build. All RPMs should have already been built.
-runProcess(...dockerCompose, "build", "--parallel");
+runProcess(...dockerCompose, "build", "--parallel", ...splitEnvironmentVariable("INPUT_SERVICES", true));

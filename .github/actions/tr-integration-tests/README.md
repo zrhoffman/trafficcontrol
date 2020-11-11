@@ -17,23 +17,19 @@
     under the License.
 -->
 
-# build-ciab JavaScript action
+# tr-integration-tests JavaScript action
 
-This action builds the CDN-in-a-Box images. It assumes the RPMs are already built and exist in artifacts in the `dist/` directory.
+This action runs the CDN-in-a-Box and exits with the exit code from the `readiness` service.
 
 ## Inputs
-### `additional-composes`
-**Optional** Additional compose files to include, in addition to docker-compose.yml, separated by spaces
-
-### `services`
-**Optional** A list of docker-compose services to build, separated by spaces
+None
 
 ## Outputs
 ### `exit-code`
 
-Exit code from building the images
+Exit code of the script
 
 ## Example usage
 ```yaml
-uses: .github/actions/build-ciab
+uses: .github/actions/tr-integration-tests
 ```
