@@ -81,6 +81,16 @@ TO_PROPERTIES
 )
 sed -i "s|traffic_monitor\\.bootstrap\\.hosts|${TM_FQDN}:${TM_PORT}|g" core/src/main/webapp/WEB-INF/applicationContext.xml
 
+set -o allexport
+BUILD_LOCK=build_lock
+BUILD_NUMBER=build_number
+RHEL_VERSION=rhel_version
+STARTUP_SCRIPT_DIR=/startup-dir
+STARTUP_SCRIPT_LOC=../core/src/main/lib/systemd/system
+TOMCAT_RELEASE=tomcat_release
+TOMCAT_VERSION=tomcat_version
+set +o allexport
+
 trap 'mv core/target/surefire-reports/* core/target/failsafe-reports/* /junit' EXIT
 trap - ERR
 "${mvn_command[@]}" verify \
