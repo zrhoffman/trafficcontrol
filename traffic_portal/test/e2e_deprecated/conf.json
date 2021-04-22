@@ -10,7 +10,7 @@
     "defaultTimeoutInterval": 600000
   },
   "params": {
-    "adminPassword": "twelve12",
+    "adminPassword": "twelve",
     "adminUser": "admin"
   },
   "seleniumAddress": "http://localhost:4444/wd/hub",
