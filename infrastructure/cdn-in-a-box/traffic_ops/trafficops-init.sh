@@ -21,9 +21,10 @@
 # Check that env vars are set
 set -ex
 for v in TO_HOST TO_PORT TO_ADMIN_USER TO_ADMIN_PASSWORD; do
-    [[ -z $(eval echo \$$v) ]] || continue
-    echo "$v is unset"
+  if [[ -z "${!v}" ]]; then
+    echo "$v is unset" >&2
     exit 1
+  fi
 done
 
 . /to-access.sh
