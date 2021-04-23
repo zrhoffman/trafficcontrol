@@ -45,7 +45,7 @@ cp "$X509_CA_CERT_FULL_CHAIN_FILE" /usr/local/share/ca-certificates
 update-ca-certificates
 
 # Traffic Ops must be accepting connections before enroller can start
-until nc -z $TO_FQDN $TO_PORT </dev/null >/dev/null && to-ping; do
+until nc -w2 -z $TO_FQDN $TO_PORT </dev/null >/dev/null && to-ping; do
   echo "Waiting for $TO_URL"
   sleep 5
 done

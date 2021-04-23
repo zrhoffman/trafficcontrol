@@ -102,7 +102,7 @@ EOF
 touch /opt/traffic_stats/var/log/traffic_stats/traffic_stats.log
 
 # Wait for influxdb
-until nc $INFLUXDB_HOST $INFLUXDB_PORT </dev/null >/dev/null 2>&1; do
+until nc -w2 $INFLUXDB_HOST $INFLUXDB_PORT </dev/null >/dev/null 2>&1; do
   echo "Waiting for influxdb to start..."
   sleep 3
 done
@@ -110,7 +110,7 @@ done
 /opt/traffic_stats/influxdb_tools/create_ts_databases -user $INFLUXDB_ADMIN_USER -password $INFLUXDB_ADMIN_PASSWORD -url http://$INFLUXDB_HOST:$INFLUXDB_PORT -replication 1
 
 # Wait for traffic monitor
-until nc $TM_FQDN $TM_PORT </dev/null >/dev/null 2>&1; do
+until nc -w2 $TM_FQDN $TM_PORT </dev/null >/dev/null 2>&1; do
   echo "Waiting for Traffic Monitor to start..."
   sleep 3
 done
