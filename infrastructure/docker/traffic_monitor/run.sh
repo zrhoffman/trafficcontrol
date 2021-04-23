@@ -29,7 +29,7 @@
 envvars=( TRAFFIC_OPS_URI TRAFFIC_OPS_USER TRAFFIC_OPS_PASS )
 for v in $envvars
 do
-	if [[ -z $$v ]]; then echo "$v is unset"; exit 1; fi
+	if [[ -z "${!v}" ]]; then echo "$v is unset"; exit 1; fi
 done
 
 start() {

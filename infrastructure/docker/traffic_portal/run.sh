@@ -30,7 +30,7 @@ SPIN_SLEEP_TIME="2000"
 
 envvars=(TO_SERVER TO_PORT DOMAIN)
 for v in "${envvars}"; do
-	if [[ -z $$v ]]; then echo "$v is unset"; exit 1; fi
+	if [[ -z "${!v}" ]]; then echo "$v is unset"; exit 1; fi
 done
 
 CONF_DIR="/opt/traffic_portal/conf"
