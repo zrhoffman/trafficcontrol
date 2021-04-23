@@ -26,7 +26,7 @@ sleep 3
 vncconfig -iconic &
 xterm -bg black -fg white +sb &
 
-until nc 'trafficportal.infra.ciab.test' 443 </dev/null >/dev/null 2>&1; do
+until nc -w2 'trafficportal.infra.ciab.test' 443 </dev/null >/dev/null 2>&1; do
   echo "Waiting for Traffic Portal to start" 
   sleep 2
 done
