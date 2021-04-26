@@ -135,7 +135,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	DOCKER_BUILDKIT=1 docker build "$ciab_dir" -f "${ciab_dir}/traffic_vault/Dockerfile" -t "$trafficvault" >/dev/null
+	DOCKER_BUILDKIT=1 docker build "$ciab_dir" -f "${ciab_dir}/traffic_vault/Dockerfile" -t "$trafficvault" >/dev/null 2>&1
 	echo 'Starting Traffic Vault...';
 	docker run \
 		--detach \
@@ -145,9 +145,9 @@ start_traffic_vault() {
 		--publish=8087:8087 \
 		--rm \
 		"$trafficvault" \
-		/usr/lib/riak/riak-cluster.sh;
+		/usr/lib/riak/riak-cluster.sh >/dev/null 2>&1;
 }
-start_traffic_vault &
+start_traffic_vault >/dev/null 2>&1 &
 
 sudo apt-get install -y --no-install-recommends gettext \
 	ruby ruby-dev libc-dev curl \
@@ -189,9 +189,6 @@ to_build() {
   truncate --size=0 warning.log error.log event.log info.log
 
   ./traffic_ops_golang --cfg ./cdn.conf --dbcfg ./database.conf -riakcfg riak.conf &
-  tail -f warning.log 2>&1 | color_and_prefix "${yellow_bg}" 'Traffic Ops WARN' &
-  tail -f error.log 2>&1 | color_and_prefix "${red_bg}" 'Traffic Ops ERR' &
-  tail -f event.log 2>&1 | color_and_prefix "${gray_bg}" 'Traffic Ops EVT' &
 }
 
 tp_build() {
@@ -210,7 +207,8 @@ tp_build() {
 (tp_build) &
 
 onFail() {
-	docker logs "$trafficvault"  > Reports/traffic_vault.log
+  set +o errexit
+  docker logs "$trafficvault"  > Reports/traffic_vault.log
   mv tp.log Reports/forever.log
   mv access.log Reports/tp-access.log
   mv out.log Reports/node.log
